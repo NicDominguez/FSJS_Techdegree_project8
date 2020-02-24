@@ -1,0 +1,25 @@
+{
+  "name": "fsjs_techdegree_project8",
+  "version": "1.0.0",
+  "description": "SQL Library Manager",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NicDominguez/FSJS_Techdegree_project8.git"
+  },
+  "author": "Nicholas Dominguez",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NicDominguez/FSJS_Techdegree_project8/issues"
+  },
+  "homepage": "https://github.com/NicDominguez/FSJS_Techdegree_project8#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "pug": "^2.0.4",
+    "sequelize": "^5.21.5",
+    "sqlite3": "^4.1.1"
+  }
+}
