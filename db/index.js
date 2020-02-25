@@ -13,4 +13,4 @@ const db = {
 
 db.models.Book = require('./models/book.js') (sequelize);
 
-mopdule.exports = db;
+module.exports = db;
