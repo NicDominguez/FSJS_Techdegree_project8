@@ -2,8 +2,9 @@ extends layout.pug
 
 block content
     h1 Page Not Found
+    h2= error.status
     p Sorry! We couldn't find the page you were looking for.
     br
     p
-        a.button(href="all_books.html")
+        a.button(href="/books") Try Again
         
