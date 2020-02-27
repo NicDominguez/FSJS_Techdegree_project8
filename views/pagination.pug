@@ -1,0 +1,9 @@
+- let displayPage = page;
+- let i = 1;
+div.pagination
+    a.button(href = `/books/?page=${+displayPage - 1}`) Prev
+    ul
+        while i <= totalPages
+            li
+                a.button(href = `/books/?page=${i}`)= i++
+    a.button(href = `/books/?page=${+displayPage + 1}`) Next

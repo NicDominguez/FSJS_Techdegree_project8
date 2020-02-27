@@ -25,13 +25,11 @@ block content
                     td= book.genre
                     td= book.year
         else
-            each book in allBooks
+            each book in allBooks.rows
                 tr
                     td
                         a(href="/books/" + book.id)= book.title
                     td= book.author
                     td= book.genre
                     td= book.year
-    if allBooks.length > 10
-        a.button Prev
-        a.button Next
+    include pagination

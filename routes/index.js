@@ -22,20 +22,21 @@ function asyncHandler(cb){
     }
 }
 
-// Pagination Helper Function
+// Pagination Handler
 const paginate = (query, { page, pageSize }) => {
-    const offset = page * pageSize;
+    const order =  [['title', 'ASC']];
+    const offset = (page - 1 ) * pageSize;
     const limit = pageSize;
   
     return {
       ...query,
+      order,
       offset,
       limit,
     };
   };
   
   
-
 // Routes
 
 router.get('/', (req, res) => {
@@ -43,9 +44,17 @@ router.get('/', (req, res) => {
 });
 
 router.get('/books', asyncHandler(async (req, res) => {
-    const allBooks = await Book.findAll()
+    let pageSize = 5;
+    let page = req.query.page;
+    if (!page) {page = 1}
+
+    const allBooks = await Book.findAndCountAll(
+        paginate( {}, {page, pageSize})
+    );
+    let totalPages = Math.ceil(allBooks.count / pageSize);
+
     if (allBooks) {
-        res.render('all_books', {allBooks});
+        res.render('all_books', {allBooks, page, totalPages});
     } else {
         throw error = {
             status: 500,
@@ -55,27 +64,36 @@ router.get('/books', asyncHandler(async (req, res) => {
 }));
 
 router.post('/books', asyncHandler(async (req, res) => {
+    let pageSize = 5;
+    let page = req.query.page;
+    if (!page) { page = 1 }
     const searchText = req.body.bookSearch.toLowerCase()
-    const searchedBooks = await Book.findAndCountAll({
-        where: {
-            [Op.or]: {
-                title: {
-                    [Op.like]: `%${searchText}%`
-                },
-                author: {
-                    [Op.like]: `%${searchText}%`
-                },
-                genre: {
-                    [Op.like]: `%${searchText}%`
-                },
-                year: {
-                    [Op.like]: `%${searchText}%`
+    const searchedBooks = await Book.findAndCountAll(
+        paginate(
+            {
+                where: {
+                    [Op.or]: {
+                        title: {
+                            [Op.like]: `%${searchText}%`
+                        },
+                        author: {
+                            [Op.like]: `%${searchText}%`
+                        },
+                        genre: {
+                            [Op.like]: `%${searchText}%`
+                        },
+                        year: {
+                            [Op.like]: `%${searchText}%`
+                        }
+                    }
                 }
-            }
-        }
-    })
+            }, {page, pageSize}
+        )
+    );
+    let totalPages = Math.ceil(searchedBooks.count/pageSize)
+
     if (searchedBooks.count > 0) {
-        res.render('all_books', {searchedBooks});
+        res.render('all_books', {searchedBooks, searchText, page, totalPages});
     } else {
         throw error = {
             status: 500,
