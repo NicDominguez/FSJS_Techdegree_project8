@@ -1,5 +1,6 @@
 const Sequelize = require('sequelize');
 
+// Creates Book model with validation
 module.exports = (sequelize) => {
     class Book extends Sequelize.Model { }
     Book.init({

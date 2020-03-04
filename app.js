@@ -4,12 +4,18 @@ const routes = require('./routes');
 
 const app = express();
 
+
+// Set view engine and json parser
 app.set('view engine', 'pug');
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+
+// Sets static route to the public folder
 app.use('/static', express.static('public'))
 
+
+// Check for routes
 app.use(routes);
 
 // Page Not Found Error Throw

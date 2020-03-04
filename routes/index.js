@@ -37,9 +37,11 @@ const paginate = (query, { page, pageSize }) => {
   };
   
   
-// Routes
+// ROUTES
+
 
 router.get('/', (req, res) => {
+    // Redirects / to /books route
     res.redirect('/books');
 });
 
@@ -48,6 +50,7 @@ router.get('/books', asyncHandler(async (req, res) => {
     let bookList
     let totalPages
 
+    // Determines if searchText was passed as a query and converts it to a null value instead of string
     let searchText
         if (req.query.search === "null") {
             searchText = null
@@ -56,21 +59,21 @@ router.get('/books', asyncHandler(async (req, res) => {
         }
 
     
+    // If a search did not occur such as aon initial page load then sets searchText to null value
     if (!searchText) {searchText = null}
 
+    // Sets page vairable to page query or a default of 1
     let page = req.query.page;
     if (!page) { page = 1 }
     
+    // If search did not take place then retrieve all book data without where clause
     if (searchText === null) {
-        console.log("variable search text is", searchText)
-        console.log("all books clasue firing")
         bookList = await Book.findAndCountAll(
             paginate( {}, {page, pageSize})
         );
         totalPages = Math.ceil(bookList.count / pageSize);
     } else {
-        console.log("variable search text is", searchText)
-        console.log("search clasue firing")
+        // If search did occur then run search data on searchText
         bookList = await Book.findAndCountAll(
             paginate(
                 {
@@ -93,6 +96,7 @@ router.get('/books', asyncHandler(async (req, res) => {
                 }, { page, pageSize }
             )
         );
+        // Set total pages based on numbe rof search results
         totalPages = Math.ceil(bookList.count / pageSize);
     }
 
@@ -108,11 +112,14 @@ router.get('/books', asyncHandler(async (req, res) => {
 
 router.post('/books', asyncHandler(async (req, res) => {
     let pageSize = 5;
+    // Sets page vairable to page query or a default of 1
     let page = req.query.page;
     if (!page) { page = 1 }
     
+    // Retrieve searchText from input field
     let searchText = req.body.bookSearch.toLowerCase()
     
+    // Retrieve data based on searchText
     const bookList = await Book.findAndCountAll(
         paginate(
             {
@@ -135,11 +142,13 @@ router.post('/books', asyncHandler(async (req, res) => {
             }, {page, pageSize}
         )
     );
+    // Set total pages based on numbe rof search results
     let totalPages = Math.ceil(bookList.count/pageSize)
 
     if (bookList.count > 0) {
         res.render('all_books', {bookList, searchText, page, totalPages});
     } else {
+        // Error if no results
         throw error = {
             status: 500,
             message: "I'm soory, but your search did not turn up any results"
@@ -166,14 +175,18 @@ router.get('/books/:id', asyncHandler(async (req, res) => {
 
 
 router.post('/books/new', asyncHandler(async (req, res) => {
+    // Creates new book data entry based on req/body
     const newBook = await Book.create(req.body);
+    // Redirects to new book details page
     res.redirect('/books/' + newBook.id);
 
 }));
 
 router.post('/books/:id', asyncHandler(async(req, res) => {
     const bookToUpdate = await Book.findByPk(req.params.id);
+    // Updates book data entry based on req/body
     await bookToUpdate.update(req.body);
+    // Redirects to updated book details page
     res.redirect('/books/' + bookToUpdate.id);
 }));
 
