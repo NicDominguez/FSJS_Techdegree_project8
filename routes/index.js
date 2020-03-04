@@ -45,16 +45,59 @@ router.get('/', (req, res) => {
 
 router.get('/books', asyncHandler(async (req, res) => {
     let pageSize = 5;
+    let bookList
+    let totalPages
+
+    let searchText
+        if (req.query.search === "null") {
+            searchText = null
+        } else {
+            searchText = req.query.search
+        }
+
+    
+    if (!searchText) {searchText = null}
+
     let page = req.query.page;
-    if (!page) {page = 1}
+    if (!page) { page = 1 }
+    
+    if (searchText === null) {
+        console.log("variable search text is", searchText)
+        console.log("all books clasue firing")
+        bookList = await Book.findAndCountAll(
+            paginate( {}, {page, pageSize})
+        );
+        totalPages = Math.ceil(bookList.count / pageSize);
+    } else {
+        console.log("variable search text is", searchText)
+        console.log("search clasue firing")
+        bookList = await Book.findAndCountAll(
+            paginate(
+                {
+                    where: {
+                        [Op.or]: {
+                            title: {
+                                [Op.like]: `%${searchText}%`
+                            },
+                            author: {
+                                [Op.like]: `%${searchText}%`
+                            },
+                            genre: {
+                                [Op.like]: `%${searchText}%`
+                            },
+                            year: {
+                                [Op.like]: `%${searchText}%`
+                            }
+                        }
+                    }
+                }, { page, pageSize }
+            )
+        );
+        totalPages = Math.ceil(bookList.count / pageSize);
+    }
 
-    const allBooks = await Book.findAndCountAll(
-        paginate( {}, {page, pageSize})
-    );
-    let totalPages = Math.ceil(allBooks.count / pageSize);
-
-    if (allBooks) {
-        res.render('all_books', {allBooks, page, totalPages});
+    if (bookList) {
+        res.render('all_books', {bookList, page, totalPages, searchText});
     } else {
         throw error = {
             status: 500,
@@ -67,8 +110,10 @@ router.post('/books', asyncHandler(async (req, res) => {
     let pageSize = 5;
     let page = req.query.page;
     if (!page) { page = 1 }
-    const searchText = req.body.bookSearch.toLowerCase()
-    const searchedBooks = await Book.findAndCountAll(
+    
+    let searchText = req.body.bookSearch.toLowerCase()
+    
+    const bookList = await Book.findAndCountAll(
         paginate(
             {
                 where: {
@@ -90,10 +135,10 @@ router.post('/books', asyncHandler(async (req, res) => {
             }, {page, pageSize}
         )
     );
-    let totalPages = Math.ceil(searchedBooks.count/pageSize)
+    let totalPages = Math.ceil(bookList.count/pageSize)
 
-    if (searchedBooks.count > 0) {
-        res.render('all_books', {searchedBooks, searchText, page, totalPages});
+    if (bookList.count > 0) {
+        res.render('all_books', {bookList, searchText, page, totalPages});
     } else {
         throw error = {
             status: 500,

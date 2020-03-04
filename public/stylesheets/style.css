@@ -95,3 +95,21 @@ input[type=text] {
 .error {
   color: rgb(236, 15, 15);
 }
+
+
+/* Additional Styes */
+
+.pagination {
+  display: flex;
+  flex-direction: row;
+  margin: 10px 10%;
+}
+
+.pagination ul {
+  display: flex;
+  flex-direction: row;
+}
+
+.pagination ul li {
+  margin: 0px 10px;
+}

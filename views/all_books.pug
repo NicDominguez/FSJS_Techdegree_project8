@@ -4,10 +4,10 @@ block content
     h1 Books
     p
         a.button(href="/books/new") Create New Book
-    form(method="post")
+    form(method="post" action=`/books/?page=1`)
         p
             input(type="search", id="bookSearch", name="bookSearch", placeholder="Search for a book")
-            input(type="submit" value="Search")
+            input(type="submit" value="Search" )
     table
         thead
             tr
@@ -16,20 +16,11 @@ block content
                 th Genre
                 th Year
         tbody
-        if searchedBooks
-            each book in searchedBooks.rows
-                tr
-                    td
-                        a(href="/books/" + book.id)= book.title
-                    td= book.author
-                    td= book.genre
-                    td= book.year
-        else
-            each book in allBooks.rows
-                tr
-                    td
-                        a(href="/books/" + book.id)= book.title
-                    td= book.author
-                    td= book.genre
-                    td= book.year
+        each book in bookList.rows
+            tr
+                td
+                    a(href="/books/" + book.id)= book.title
+                td= book.author
+                td= book.genre
+                td= book.year
     include pagination
