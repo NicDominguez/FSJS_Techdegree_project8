@@ -6,7 +6,7 @@ div.pagination
         a.button(href = `/books/?page=${+displayPage - 1}&search=${query}`) Prev
     ul
         while i <= totalPages
-            li
+            li(class= displayPage == i ? 'active' : '')
                 a(href = `/books/?page=${i}&search=${query}`)= i++
     unless displayPage == totalPages
         a.button(href = `/books/?page=${+displayPage + 1}&search=${query}`) Next

@@ -113,3 +113,7 @@ input[type=text] {
 .pagination ul li {
   margin: 0px 10px;
 }
+
+.active {
+  border-bottom: 3px solid #01b189;
+}
