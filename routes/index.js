@@ -14,7 +14,8 @@ function asyncHandler(cb){
             await cb(req, res, next)
         } catch (error) {
             if (error.name === "SequelizeValidationError") {
-                res.render('form_error') 
+                let path = req.path
+                res.render('form_error', {error, path})
             } else {
                 return next(error)
             }
@@ -101,7 +102,7 @@ router.get('/books', asyncHandler(async (req, res) => {
     }
 
     if (bookList) {
-        res.render('all_books', {bookList, page, totalPages, searchText});
+        res.render('index', {bookList, page, totalPages, searchText});
     } else {
         throw error = {
             status: 500,
@@ -146,7 +147,7 @@ router.post('/books', asyncHandler(async (req, res) => {
     let totalPages = Math.ceil(bookList.count/pageSize)
 
     if (bookList.count > 0) {
-        res.render('all_books', {bookList, searchText, page, totalPages});
+        res.render('index', {bookList, searchText, page, totalPages});
     } else {
         // Error if no results
         throw error = {
@@ -163,7 +164,7 @@ router.get('/books/new', asyncHandler(async (req, res) => {
 router.get('/books/:id', asyncHandler(async (req, res) => {
     const singleBook = await Book.findByPk(req.params.id);
     if (singleBook) {
-        res.render('book_detail', {singleBook});
+        res.render('update-book', {singleBook});
     } else {
         throw error = {
             status: 500,

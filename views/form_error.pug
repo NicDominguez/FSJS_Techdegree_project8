@@ -1,11 +1,14 @@
 extends layout.pug
 
 block content
-    h1 Error submitting new book
+    h1 Error submitting book
     form
         h2.error Oooops!
         ul.error
-            li Author is required
-            li Name is required
+            each value in error.errors
+                li= value.message
         p
-    include new_book
+    if path = "/book/new"
+        include new_book
+    else 
+        include update-book.pug
