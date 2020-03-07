@@ -8,20 +8,32 @@ const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
 /* Handler function to wrap each route. */
-function asyncHandler(cb){
+function asyncHandler(cb) {
     return async(req, res, next) => {
         try {
             await cb(req, res, next)
         } catch (error) {
             if (error.name === "SequelizeValidationError") {
                 let path = req.path
-                res.render('form_error', {error, path})
+                if (path === "/books/new") {
+                    res.render('new_book', {error})
+                } else {
+                    const singleBook = await Book.findByPk(req.params.id);
+                    if (singleBook) {
+                        res.render('update-book', { singleBook, error });
+                    } else {
+                        throw error = {
+                            status: 500,
+                            message: "I'm sorry but that book does not exist in our database"
+                        }
+                    };
+                }
             } else {
                 return next(error)
             }
         }
     }
-}
+};
 
 // Pagination Handler
 const paginate = (query, { page, pageSize }) => {
